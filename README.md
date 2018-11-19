@@ -19,7 +19,7 @@ go build server.go
 ## Config
 Copy `config.example.json` to `config.json` and change `port` to the port you wish to run the server on and `command` to the command you would like to run when a `POST` request is send to the server.
 
-## Running
+## Run
 ```
 ./server
 ```
