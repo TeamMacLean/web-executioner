@@ -3,7 +3,8 @@
 
 ## Install
 ```
-go get -d .
+go get -v -t -d ./...
+go test -v ./...
 go build server.go
 ```
 
