@@ -17,3 +17,8 @@ Copy `config.example.json` to `config.json` and change `port` to the port you wi
 ```
 ./server
 ```
+
+## Usage
+Sending a `POST` request with a `json` body to the server will cause the command defined in your `config.json` file.
+
+Your request should have a parameter called "params" which will be appended onto the command and ran, for example if your `POST` request is `{"params":"hello world"}` and in `config.json` your command is `echo`, when the request is received `echo hello world` will be executed on the server.
