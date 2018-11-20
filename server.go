@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-martini/martini"
 	"net/http"
@@ -22,13 +23,24 @@ type Config struct {
 
 func main() {
 	//get config
-	pwd, _ := os.Getwd()
-	configJson, _ := os.Open(filepath.Join(pwd, "config.json"))
-
 	var cfg Config
-	err := json.NewDecoder(configJson).Decode(&cfg)
-	if err != nil {
-		panic(err)
+	pwd, _ := os.Getwd()
+	configPath := filepath.Join(pwd, "config.json")
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+
+		//warn of missing config
+		fmt.Println(errors.New("config.json does not exist, running in demo mode: command=echo, port=3000"))
+
+		//run in demo mode
+		cfg = Config{3000, "echo"}
+
+	} else {
+		configJson, _ := os.Open(configPath)
+
+		err := json.NewDecoder(configJson).Decode(&cfg)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	//create server

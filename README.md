@@ -23,3 +23,6 @@ Copy `config.example.json` to `config.json` and change `port` to the port you wi
 ```
 ./server
 ```
+
+## Defaults
+If no `config.json` is found, the server will start with a warning message and will run on port 3000 with `echo` as its command.
