@@ -31,16 +31,15 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(cfg.Port)
-
-	//start server
+	//create server
 	m := martini.Classic()
 
+	//catch all GETs
 	m.Get("/**", func() (int, string) {
 		return 404, "Nothing to GET here."
 	})
+	//catch POST on '/'
 	m.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		// Unmarshal
 		var params Params
 		err := json.NewDecoder(r.Body).Decode(&params)
 		if err != nil {
@@ -48,27 +47,31 @@ func main() {
 			return
 		}
 
+		//run command
 		go run(cfg.Command, params)
 	})
 
+	//start server
 	m.RunOnAddr(fmt.Sprintf(":%d", cfg.Port))
-	//m.Run() //run on default port (3000)
 }
 
-//taken from https://stackoverflow.com/questions/20437336/how-to-execute-system-command-in-golang-with-unknown-arguments
-func run(cmd string, msg Params) (output string) {
-	cmd = cmd + " " + msg.Params
-	//fmt.Println("command is:", cmd)
-	// splitting head => g++ parts => rest of the command
+func run(cmd string, params Params) (output string) {
+	cmd = cmd + " " + params.Params
+
+	//log input
+	fmt.Println("input:", cmd)
+
 	parts := strings.Fields(cmd)
 	head := parts[0]
 	parts = parts[1:len(parts)]
-	//fmt.Println(parts)
 
 	out, err := exec.Command(head, parts...).Output()
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
-	//fmt.Printf("%s", out)
+
+	//log output
+	fmt.Println("output:", strings.TrimSpace(string(out)))
+
 	return strings.TrimSpace(string(out))
 }
